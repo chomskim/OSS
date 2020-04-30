@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 '''
+import pgzrun
 import random
 
 def grid_list(block_size):
@@ -916,3 +917,5 @@ def draw():
     '''
     screen.fill((0xFF, 0xFF, 0xFF))
     TETRA_PUZZLE.draw()
+
+pgzrun.go()
