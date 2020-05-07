@@ -1,10 +1,10 @@
-# http://trevorappleton.blogspot.com/2014/04/writing-pong-using-python-and-pygame.html
 import pygame, sys
 from pygame.locals import *
 
 # Number of frames per second
 # Change this value to speed up or slow down your game
-FPS = 200
+FPS = 40
+INCREASESPEED = 5
 
 #Global Variables to be used through our program
 
@@ -24,8 +24,7 @@ def drawArena():
     #Draw outline of arena
     pygame.draw.rect(DISPLAYSURF, WHITE, ((0,0),(WINDOWWIDTH,WINDOWHEIGHT)), LINETHICKNESS*2)
     #Draw centre line
-    pygame.draw.line(DISPLAYSURF, WHITE, ((WINDOWWIDTH/2),0),((WINDOWWIDTH/2),WINDOWHEIGHT), (LINETHICKNESS/4))
-
+    pygame.draw.line(DISPLAYSURF, WHITE, (int(WINDOWWIDTH/2),0),(int(WINDOWWIDTH/2),WINDOWHEIGHT), int(LINETHICKNESS/4))
 
 #Draws the paddle
 def drawPaddle(paddle):
@@ -38,15 +37,14 @@ def drawPaddle(paddle):
     #Draws paddle
     pygame.draw.rect(DISPLAYSURF, WHITE, paddle)
 
-
 #draws the ball
 def drawBall(ball):
     pygame.draw.rect(DISPLAYSURF, WHITE, ball)
 
 #moves the ball returns new position
 def moveBall(ball, ballDirX, ballDirY):
-    ball.x += ballDirX
-    ball.y += ballDirY
+    ball.x += (ballDirX * INCREASESPEED)
+    ball.y += (ballDirY * INCREASESPEED)
     return ball
 
 #Checks for a collision with a wall, and 'bounces' ball off it.
@@ -82,20 +80,20 @@ def checkPointScored(paddle1, ball, score, ballDirX):
     #if no points scored, return score unchanged
     else: return score
 
-#Artificial Intelligence of computer player 
+#Artificial Intelligence of computer player       
 def artificialIntelligence(ball, ballDirX, paddle2):
     #If ball is moving away from paddle, center bat
     if ballDirX == -1:
         if paddle2.centery < (WINDOWHEIGHT/2):
-            paddle2.y += 1
+            paddle2.y += INCREASESPEED
         elif paddle2.centery > (WINDOWHEIGHT/2):
-            paddle2.y -= 1
+            paddle2.y -= INCREASESPEED
     #if ball moving towards bat, track its movement. 
     elif ballDirX == 1:
         if paddle2.centery < ball.centery:
-            paddle2.y += 1
+            paddle2.y += INCREASESPEED
         else:
-            paddle2.y -=1
+            paddle2.y -= INCREASESPEED
     return paddle2
 
 #Displays the current score on the screen
@@ -164,7 +162,7 @@ def main():
         ballDirX = ballDirX * checkHitBall(ball, paddle1, paddle2, ballDirX)
         paddle2 = artificialIntelligence (ball, ballDirX, paddle2)
 
-        displayScore(score)
+        #displayScore(score)
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
