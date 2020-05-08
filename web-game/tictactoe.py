@@ -73,6 +73,14 @@ def findMousePointTile(px, py):
             return i;
     return -1;
 
+def checkWinner():
+    for i, seq3 in enumerate(winList):
+        winner = tileStatus[seq3[0]]
+        if winner != 0:
+            if winner == tileStatus[seq3[1]] and winner == tileStatus[seq3[2]]:
+                return winner
+    return 0
+    
 def draw():
     screen.fill(WHITE)
     screen.draw.filled_rect(Rect(OBOX,OBOX,WBOX,WBOX), BACK_GROUND)
@@ -90,7 +98,10 @@ def draw():
         drawLine2(BLUE10, 0+OBOX, hdiv3*i+OBOX, WBOX+2, 2)
     
 def update():
-    pass
+    winner = checkWinner()
+    if (winner!=0):
+         mark = ["", "X", "O"]
+         print("Winner is %s" % mark[winner])
 
 def on_mouse_down(pos):
     global stage
