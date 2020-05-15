@@ -3,7 +3,7 @@ Report #2
 
 마감일 -- 5월30일(토)
 
-1. https://github.com/chomskim/OSS/tree/master/pacman2
+1. https://github.com/chomskim/OSS/tree/pac-branch/pacman2
 2. Ghost AI 수정
 3. 4개의 Ghost의 AI(추격방법)를 각각 혹은 몇가지 만들어 협동 작전으로 Player를 잡는다.
 4. Player가 사탕을 먹은 상태면 도망가는 Move 
