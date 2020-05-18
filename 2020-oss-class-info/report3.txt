@@ -1,4 +1,4 @@
-Report #2
+Report #3
 제목 -- pacman2의 Ghost AI 높이기
 
 마감일 -- 5월30일(토)
@@ -7,5 +7,5 @@ Report #2
 2. Ghost AI 수정
 3. 4개의 Ghost의 AI(추격방법)를 각각 혹은 몇가지 만들어 협동 작전으로 Player를 잡는다.
 4. Player가 사탕을 먹은 상태면 도망가는 Move 
-5. eclass에 pong3.py 파일로 제출
+5. eclass에 pacman2.py 파일로 제출
 
