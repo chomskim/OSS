@@ -1,0 +1,10 @@
+Report #4
+제목 --  MQTT로 Raspberry PI 상태 Publish
+
+마감일 -- 6월07일(토)
+
+https://github.com/chomskim/OSS/tree/master 사용
+
+1. IOT-Proj/sub_temp.py 수정
+2. 
+3. 
