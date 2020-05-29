@@ -23,15 +23,15 @@ class DBHelper:
             password=dbconfig.db_password,
             database=dbconfig.db_name)
 
-    def insertRespRec(self, dev, tim, dat):
+    def insertRespRec(self, tim, dat):
         conn = self.connect()
         try:
-            query1 = """insert resp_table 
-            (dev_id, rec_time, resp_data)
-            values (%s, %s, %s); """
+            query1 = """insert cputemp_table 
+            (temp_time, temp_data)
+            values (%s, %s); """
             cursor = conn.cursor()
             
-            cursor.execute(query1, (dev, tim, dat))
+            cursor.execute(query1, (tim, dat))
                 
             conn.commit()    
             
@@ -45,14 +45,13 @@ class DBHelper:
         try:
             query1 = """insert resp_table 
             (dev_id, rec_time, resp_data)
-            values (%s, %s, %s); """
+            values (%s, %s); """
             cursor = conn.cursor()
             
             for rec in recList:
-                dev = rec['dev_id']
                 tim = rec['rec_time']
                 dat = rec['resp_data']
-                cursor.execute(query1, (dev, tim, dat))
+                cursor.execute(query1, (tim, dat))
                 
             conn.commit()    
             
