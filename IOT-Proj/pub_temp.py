@@ -7,11 +7,12 @@ import pandas as pd
 import os
 import re
 
+import mqconfig
+
+MQ_HOST = mqconfig.mq_host
+MQ_TITLE = mqconfig.mq_title
+
 count = 0
-
-host = "172.30.1.30"
-#host = "192.168.43.226"
-
 def on_connect(client, userdata, flags, rc):
     print("Connect result: {}".format(mqtt.connack_string(rc)))
     client.connected_flag = True
@@ -34,7 +35,7 @@ def pubTempData(client, freq=10, limit=100):
         da = re.findall(r'\d+\.\d+',temp.rstrip())[0]
 
         row = "{:s},{:s}".format(ti.strftime("%Y-%m-%d %H:%M:%S.%f"),da)
-        client.publish("cpu/temp",payload=row, qos=1)
+        client.publish(MQ_TITLE,payload=row, qos=1)
         if i%freq == 0:
             print (i, row)
         time.sleep(delta)
@@ -42,13 +43,13 @@ def pubTempData(client, freq=10, limit=100):
 if __name__ == "__main__":
     print ("get client")
     client = mqtt.Client("CPU_TEMP_PUB01")
-    client.username_pw_set('cesan', password='cesan@hufs')
+    client.username_pw_set(mqconfig.mq_user, password=mqconfig.mq_password)
     client.on_connect = on_connect
     client.on_subscribe = on_subscribe
     client.on_message = on_message
-    print ("Try to connect {} ".format(host))
-    client.connect(host, port=1883, keepalive=120)
-    print ("connected {} ".format(host))
+    print ("Try to connect {} ".format(MQ_HOST))
+    client.connect(MQ_HOST, port=1883, keepalive=120)
+    print ("connected {} ".format(MQ_HOST))
     client.loop_start()
     pubTempData(client)
 
