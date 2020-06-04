@@ -60,48 +60,20 @@ class DBHelper:
         finally:
             conn.close()
 
-    def buildRESPDFFromDB(self):
+    def buildStatusDFFromDB(self, num=None):
         conn = self.connect()
         cursor = conn.cursor()
         
         
-        df_data = {'date':[], 'RESP':[]}
-        query = "select rec_time, resp_data from resp_table "
+        df_data = {'time':[], 'Temp':[]}
+        query = "select temp_time, temp_data from cputemp_table "
         cursor.execute(query)
         for row in cursor:
-            df_data['date'].append(row[0].strftime("%Y-%m-%d %H:%M:%S.%f"))
-            df_data['RESP'].append(float(row[1]))
+            df_data['time'].append(row[0].strftime("%M:%S"))
+            df_data['Temp'].append(float(row[1]))
         
-        respdf = pd.DataFrame(data=df_data)
-        respdf = respdf.set_index('date')
-        return respdf
-
-    def buildRESPAllDFFromDB(self):
-        conn = self.connect()
-        cursor = conn.cursor()
-                
-        df_data = {'date':[], 'RESP':[]}
-        query = "select rec_time, resp_data from resp_table_all "
-        cursor.execute(query)
-        for row in cursor:
-            df_data['date'].append(row[0].strftime("%Y-%m-%d %H:%M:%S.%f"))
-            df_data['RESP'].append(float(row[1]))
+        statdf = pd.DataFrame(data=df_data)
+        statdf = statdf.set_index('time')
+        statdf = statdf.tail(num)
+        return statdf
         
-        respdf = pd.DataFrame(data=df_data)
-        respdf = respdf.set_index('date')
-        return respdf
-
-    def buildRESPDFFromDBJSON(self):
-        conn = self.connect()
-        cursor = conn.cursor()
-                
-        df_data = {'date':[], 'RESP':[]}
-        query = "select rec_time, resp_data from resp_table_all "
-        cursor.execute(query)
-        for row in cursor:
-            df_data['date'].append(row[0].strftime("%Y-%m-%d %H:%M:%S.%f"))
-            df_data['RESP'].append(float(row[1]))
-        
-        respdf = pd.DataFrame(data=df_data)
-        respdf = respdf.set_index('date')
-        return respdf
