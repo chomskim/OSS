@@ -23,7 +23,7 @@ class DBHelper:
             password=dbconfig.db_password,
             database=dbconfig.db_name)
 
-    def insertRespRec(self, tim, dat):
+    def insertStatusRec(self, tim, dat):
         conn = self.connect()
         try:
             query1 = """insert cputemp_table 
@@ -36,11 +36,11 @@ class DBHelper:
             conn.commit()    
             
         except Exception as e:
-            print("DB Error at insertRespRec", e)
+            print("DB Error at insertStatusRec", e)
         finally:
             conn.close()
 
-    def insertRespRecList(self, recList):
+    def insertStatusRecList(self, recList):
         conn = self.connect()
         try:
             query1 = """insert resp_table 
@@ -56,24 +56,7 @@ class DBHelper:
             conn.commit()    
             
         except Exception as e:
-            print("DB Error at insertRespRec", e)
-        finally:
-            conn.close()
-
-    def insertRespRec4All(self, dev, tim, dat):
-        conn = self.connect()
-        try:
-            query1 = """insert resp_table_all 
-            (dev_id, rec_time, resp_data)
-            values (%s, %s, %s); """
-            cursor = conn.cursor()
-            
-            cursor.execute(query1, (dev, tim, dat))
-                
-            conn.commit()    
-            
-        except Exception as e:
-            print("DB Error at insertRespRec", e)
+            print("DB Error at insertStatusRec", e)
         finally:
             conn.close()
 
