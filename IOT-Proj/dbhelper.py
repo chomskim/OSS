@@ -65,12 +65,14 @@ class DBHelper:
         cursor = conn.cursor()
         
         
-        df_data = {'time':[], 'Temp':[]}
+        df_data = {'time':[], 'Temp':[], 'CPU':[], 'Mem':[]}
         query = "select temp_time, temp_data from cputemp_table "
         cursor.execute(query)
         for row in cursor:
             df_data['time'].append(row[0].strftime("%M:%S"))
             df_data['Temp'].append(float(row[1]))
+            df_data['CPU'].append(7.2)
+            df_data['Mem'].append(34.4)
         
         statdf = pd.DataFrame(data=df_data)
         statdf = statdf.set_index('time')
