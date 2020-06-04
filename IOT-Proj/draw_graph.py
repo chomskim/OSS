@@ -6,7 +6,7 @@ Created on 2020. 6. 4.
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-plt.rcParams["figure.figsize"] = (6.4, 4.8)
+plt.rcParams["figure.figsize"] = (8, 4)
 
 import dbconfig
 from dbhelper import DBHelper
