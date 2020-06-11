@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import time
 from datetime import datetime
 from datetime import timedelta
+import random
 
 import dbconfig
 from dbhelper import DBHelper
@@ -20,6 +21,8 @@ sample_freq = 10 # count of data in 1 sec.
 record_freq = 1 # count of data to record in 1 sec.
 sample_max = sample_freq / record_freq
 sum_data = 0.0
+cpu_use = 7.2
+mem_use = 34.4
 
 BUF_MAX = record_freq
 rec_buf = []
@@ -50,6 +53,7 @@ def on_message(client, userdata, msg):
     global sample_count
     global sum_data
     global sample_max
+    global cpu_use, mem_use
     
     try:    
         count +=1
@@ -71,10 +75,14 @@ def on_message(client, userdata, msg):
             #print(payload_string)
             avg_data = sum_data / sample_count
             str_data = '{:.1f}'.format(avg_data)
-            sample_count = 0
-            sum_data = 0
+            ra = random.random()*2 - 1
+            cpu_use = max(0, min(100, cpu_use + ra*2))
+            mem_use = max(0, min(100, mem_use + ra*5))
+            str_data = str_data + ',{:.1f},{:.1f}'.format(cpu_use, mem_use)
             print(count, sample_count, rec_time, str_data)
             pushData2DB(rec_time, str_data)
+            sample_count = 0
+            sum_data = 0
     
     except Exception as e:
         print ("Exception", e)

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Raspberry Pi -- Status</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/index.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <h1 class="text-center" id="JumbotronHeading">Raspberry Pi Status</h1>
+    <div class="container">
+      <div class="row">
+        <div id="svgFig1">        
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../static/js/jquery-1.11.3.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script>
+    const num = 10;
+    const url = `http://127.0.0.1:5001/statusplot/${num}`;
+    console.log(url);
+    function showChart() {
+    	$.getJSON(url, json => {
+    	    //console.log(json);
+    	    $("#svgFig1").html("<div>"+json.svg+"</div>")
+    	});
+    }
+    function animateGraph() {
+    	setInterval(showChart, 1000);
+    }
+    window.onload = animateGraph;
+    </script>
+  </body>
+</html>
