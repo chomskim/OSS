@@ -75,7 +75,7 @@ def on_message(client, userdata, msg):
             #print(payload_string)
             avg_data = sum_data / sample_count
             str_data = '{:.1f}'.format(avg_data)
-            ra = random.random()*2 - 1
+            ra = random.uniform(-1, 1)
             cpu_use = max(0, min(100, cpu_use + ra*2))
             mem_use = max(0, min(100, mem_use + ra*5))
             str_data = str_data + ',{:.1f},{:.1f}'.format(cpu_use, mem_use)
