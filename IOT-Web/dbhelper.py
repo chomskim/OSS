@@ -23,6 +23,43 @@ class DBHelper:
             password=dbconfig.db_password,
             database=dbconfig.db_name)
 
+    def insertStatusRec(self, tim, dat):
+        conn = self.connect()
+        try:
+            query1 = """insert cputemp_table 
+            (temp_time, temp_data)
+            values (%s, %s); """
+            cursor = conn.cursor()
+            
+            cursor.execute(query1, (tim, dat))
+                
+            conn.commit()    
+            
+        except Exception as e:
+            print("DB Error at insertStatusRec", e)
+        finally:
+            conn.close()
+
+    def insertStatusRecList(self, recList):
+        conn = self.connect()
+        try:
+            query1 = """insert resp_table 
+            (dev_id, rec_time, resp_data)
+            values (%s, %s); """
+            cursor = conn.cursor()
+            
+            for rec in recList:
+                tim = rec['rec_time']
+                dat = rec['resp_data']
+                cursor.execute(query1, (tim, dat))
+                
+            conn.commit()    
+            
+        except Exception as e:
+            print("DB Error at insertStatusRec", e)
+        finally:
+            conn.close()
+
     def buildStatusDFFromDB(self, num=None):
         conn = self.connect()
         cursor = conn.cursor()
