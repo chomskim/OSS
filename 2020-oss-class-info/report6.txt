@@ -1,0 +1,14 @@
+Report #6
+제목 --  Raspberry PI 상태 Publish를 받아(Subscribe) MySQL Table에 저장하는 
+               동시에 웹으로 상태 그래프 보여주기
+
+마감일 -- 6월28일(일)
+
+https://github.com/chomskim/OSS/tree/master 사용
+pip install flask
+
+1. IOT-Web 의 필요 파일 수정
+2. MQTT pub/sub는 과제 5와 같음. 단 sub_mysql은 웹서버에서 실행해도 됨 
+3. 디스플레이 레코드 수를 20개로 수정
+4. 자신의 IOT_Web folder를 Zip하여 제출
+ 
