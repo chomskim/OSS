@@ -11,4 +11,4 @@ pip install flask
 2. MQTT pub/sub는 과제 5와 같음. 단 sub_mysql은 웹서버에서 실행해도 됨 
 3. 디스플레이 레코드 수를 20개로 수정
 4. 자신의 IOT_Web folder를 Zip하여 제출
- 
+5. Chrome에 디스플레이 되는 그래프 동영상 5초 정도 캡쳐해 함께 제출
