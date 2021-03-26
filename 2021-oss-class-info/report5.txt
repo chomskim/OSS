@@ -1,0 +1,19 @@
+Report #5
+제목 --  Raspberry PI 상태 Publish를 받아(Subscribe) MySQL Table에 저장 
+
+마감일 -- 6월14일(일)
+
+https://github.com/chomskim/OSS/tree/master 사용
+pip install mysql-connector
+
+1. IOT-Proj/sub_mysql.py 수정
+2. 4번과제의 프로그램을 pub_stat.py로 고쳐 실행
+3. RPi의 같은 폴더에서 dbconfig.py, dbhelper.py, mqconfig.py 와 함께 실행 
+4. 4번 과제에서 받은 
+2020-05-29 15:58:08.742108,52.1,27.4,874.5,258.7
+의 한 Row를
+temp_time(2020-05-29 15:58:08.742108), temp_data("52.1,27.4,874.5,258.7")
+두 column으로 저장(MySQL Table은 바꾸지 않는다) 
+
+ 5. 자신의 pub_stat.py sub_sql.py를 같이 제출
+  
