@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Connect Four</title>
+    <style type="text/css">
+      #nemopan {
+        background-color: #0000cd;
+        position: absolute;
+        left: 50px;
+        top: 50px;
+      }
+      #winner {
+        position: absolute;
+        left: 50px;
+        top: 650px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="nemopan" width="700" height="600"> </canvas>
+    <div id="winner"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      function Point(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+      function Tile(x, y, w, h) {
+        this.x = x;
+        this.y = y;
+        this.width = w;
+        this.height = h;
+        this.contains = function (p1) {
+          return (
+            this.x < p1.x &&
+            p1.x < this.x + this.width &&
+            this.y < p1.y &&
+            p1.y < this.y + this.height
+          );
+        };
+      }
+      function drawLine(ctx, width, color, from, to) {
+        ctx.lineWidth = width;
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        ctx.closePath();
+        ctx.stroke();
+      }
+      function drawCircle(ctx, color, center, radius) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2, false);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function drawO(ctx, color, tile) {
+        var cen = new Point(tile.x + 0.5 * tile.width, tile.y + 0.5 * tile.height);
+        var rad = Math.min(tile.width, tile.height) * 0.35;
+        drawCircle(ctx, color, cen, rad);
+      }
+      function findMousePointTile(p1) {
+        for (var i = 0; i < colRegion.length; ++i) {
+          if (colRegion[i].contains(p1)) {
+            return i;
+          }
+        }
+        return -1;
+      }
+      function findMousePointCol(p1) {
+        for (var i = 0; i < colRegion.length; ++i) {
+          if (colRegion[i].contains(p1)) {
+            return i;
+          }
+        }
+        return -1;
+      }
+      function doMouseClick(mouseEvent) {
+        var obj = $('#nemopan')[0];
+        var objleft = 0;
+        var objtop = 0;
+        var xpos;
+        var ypos;
+        while (obj.offsetParent) {
+          objleft += obj.offsetLeft;
+          objtop += obj.offsetTop;
+          obj = obj.offsetParent;
+        }
+        xpos = mouseEvent.pageX - objleft;
+        ypos = mouseEvent.pageY - objtop;
+        //console.log(xpos + ", " + ypos);
+        //$("#coord").text(xpos + ", " + ypos);
+        var col = findMousePointCol(new Point(xpos, ypos));
+        // find lowest empty position of col
+        var bot = 0;
+        for (var i = _ROW - 1; i >= 0; --i) {
+          if (tileStatus[i][col] == 0) {
+            bot = i;
+            break;
+          }
+        }
+        //console.log("col=",col,"bot=",bot);
+
+        stage++;
+        if (stage % 2 == 0) {
+          tileStatus[bot][col] = 2;
+        } else {
+          tileStatus[bot][col] = 1;
+        }
+
+        displayGamePan();
+        ///*
+        var winner = checkWinner(bot, col);
+        if (winner != 0) {
+          var mark = ['', 'Yellow', 'Red'];
+          $('#winner').text('Winner is ' + mark[winner]);
+          canvas[0].onmousedown = doNothing;
+        }
+        //*/
+      }
+      function checkWinner(ro, co) {
+        var winner = tileStatus[ro][co];
+        // case N-S
+        var lcount = 0;
+        var rcount = 0;
+        var k = 1;
+        while (ro + k < _ROW) {
+          if (winner == tileStatus[ro + k][co]) {
+            lcount++;
+          } else break;
+          k++;
+        }
+        if (lcount + rcount + 1 >= 4) return winner;
+        // case W-E
+        winner = tileStatus[ro][co];
+        lcount = 0;
+        k = 1;
+        while (co - k >= 0) {
+          if (winner == tileStatus[ro][co - k]) {
+            lcount++;
+          } else break;
+          k++;
+        }
+        rcount = 0;
+        k = 1;
+        while (co + k < _COL) {
+          if (winner == tileStatus[ro][co + k]) {
+            rcount++;
+          } else break;
+          k++;
+        }
+        if (lcount + rcount + 1 >= 4) return winner;
+
+        // case NE-SW
+        winner = tileStatus[ro][co];
+        lcount = 0;
+        k = 1;
+        while (co - k >= 0 && ro + k < _ROW) {
+          if (winner == tileStatus[ro + k][co - k]) {
+            lcount++;
+          } else break;
+          k++;
+        }
+        rcount = 0;
+        k = 1;
+        while (co + k < _COL && ro - k >= 0) {
+          if (winner == tileStatus[ro - k][co + k]) {
+            rcount++;
+          } else break;
+          k++;
+        }
+        if (lcount + rcount + 1 >= 4) return winner;
+
+        // case NW-SE
+        winner = tileStatus[ro][co];
+        lcount = 0;
+        k = 1;
+        while (co - k >= 0 && ro - k >= 0) {
+          if (winner == tileStatus[ro - k][co - k]) {
+            lcount++;
+          } else break;
+          k++;
+        }
+        rcount = 0;
+        k = 1;
+        while (co + k < _COL && ro + k < _ROW) {
+          if (winner == tileStatus[ro + k][co + k]) {
+            rcount++;
+          } else break;
+          k++;
+        }
+        if (lcount + rcount + 1 >= 4) return winner;
+
+        return 0; // no winner
+      }
+      function displayGamePan() {
+        for (var i = 0; i < _ROW; ++i) {
+          for (var j = 0; j < _COL; ++j) {
+            if (tileStatus[i][j] == 1) {
+              drawO(context, 'yellow', tile2d[i][j]);
+            } else if (tileStatus[i][j] == 2) {
+              drawO(context, 'red', tile2d[i][j]);
+            }
+          }
+        }
+      }
+      function doNothing(mouseEvent) {
+        $('#winner').text('Game Finished -- Try new Game');
+      }
+
+      var _COL = 7;
+      var _ROW = 6;
+      var canvas;
+      var tile2d;
+      var context;
+      var tileStatus = [
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+      ];
+      var colRegion = new Array(_COL);
+      var stage = 0;
+
+      $(document).ready(function () {
+        canvas = $('#nemopan');
+        context = canvas.get(0).getContext('2d');
+
+        var canvasWidth = canvas.width();
+        var canvasHeight = canvas.height();
+
+        var wdiv7 = canvasWidth / _COL;
+        var hdiv6 = canvasHeight / _ROW;
+
+        tile2d = new Array(_ROW);
+        // init 6x7 tile
+        for (var i = 0; i < _ROW; ++i) {
+          var top = i * hdiv6;
+          tile2d[i] = new Array(_COL);
+          for (var j = 0; j < _COL; ++j) {
+            var left = j * wdiv7;
+            tile2d[i][j] = new Tile(left, top, wdiv7, hdiv6);
+          }
+        }
+        // init Column Click Region
+        for (var j = 0; j < _COL; ++j) {
+          var left = j * wdiv7;
+          colRegion[j] = new Tile(left, 0, wdiv7, canvasHeight);
+        }
+        // init Panel Draw
+        for (var i = 0; i < _ROW; ++i) {
+          for (var j = 0; j < _COL; ++j) {
+            drawO(context, 'white', tile2d[i][j]);
+            tileStatus[i][j] = 0;
+          }
+        }
+
+        canvas[0].onmousedown = doMouseClick;
+      });
+    </script>
+  </body>
+</html>
