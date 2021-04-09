@@ -1,12 +1,10 @@
 Report #1
-제목 -- pgzero를 이용한 Connect four Game
+제목 -- pgzero를 이용한 Card game
+마감일 -- 4월30일(금)
 
-마감일 -- 5월11일(월)
-
-1. http://220.67.121.119/games/day2/connect4.html 
-   https://github.com/chomskim/Web-Game/tree/develop/Web-Game-Day2 
-   참조 (JavaScript로 작성된 프로그램)
+1. card.py 수정
+   참조 (web-game/js/card.html)
 
 2. Python pgzero 를 이용한 프로그램으로 만들기
-3. eclass에 xxxx.py 파일로 제출
+3. eclass에 card.py 파일로 제출
 
