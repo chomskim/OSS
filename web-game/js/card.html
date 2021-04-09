@@ -1,324 +1,372 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset=utf-8>
-  <title>Concentration</title>
-  <style type="text/css">
-    #cardpan {
-      background-color: #006633;
-      position: absolute;
-      left: 0px;
-      top: 0px;      
-      padding: 0px 0px;
-    }
-    #playerA {
-      position: absolute;
-      left: 91px;
-      top: 420px;          
-    }
-    #playerB {
-      position: absolute;
-      left: 517px;
-      top: 420px;          
-    }    
-    .waitState {
-    	color: white;
-    }
-    .firstPick {
-    	color: orange;
-    }
-    .secondPick {
-    	color: red;
-    }
-  </style>
-   
-</head>
-<body>
-  <canvas id="cardpan" width="963" height="464">
-  </canvas>
-  <div id="playerA" class="waitState">PlayerA</div>
-  <div id="playerB" class="waitState">PlayerB</div>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script type="text/javascript">
-  	function Point(x, y){
-		this.x = x;
-		this.y = y;
-  	}
-    function CardTile(x, y, w, h){
-		this.x = x;
-		this.y = y;
-		this.width = w;
-		this.height = h;
-		this.contains = function(p1) {
-			return this.x < p1.x && p1.x < this.x+this.width
-			&& this.y < p1.y && p1.y < this.y+this.height;
-		}
-    }
-	function drawRect(ctx, color, tile){
-		ctx.fillStyle = color;
-		ctx.fillRect(tile.x, tile.y, tile.width, tile.height);
-		ctx.fill();
-	}
-	const CARD_WIDTH = 71;
-	const CARD_HEIGHT = 96;
-	const GAP = 20;
-	
-  	const ROWMAX = 4;
-  	const COLMAX = 13;
-	
-  	var cardImgFiles = [
-  		"img/c1", "img/c2", "img/c3", "img/c4", "img/c5", "img/c6", "img/c7", "img/c8", "img/c9", "img/c10", "img/cj", "img/cq", "img/ck",
-  		"img/d1", "img/d2", "img/d3", "img/d4", "img/d5", "img/d6", "img/d7", "img/d8", "img/d9", "img/d10", "img/dj", "img/dq", "img/dk",
-  		"img/s1", "img/s2", "img/s3", "img/s4", "img/s5", "img/s6", "img/s7", "img/s8", "img/s9", "img/s10", "img/sj", "img/sq", "img/sk",
-  		"img/h1", "img/h2", "img/h3", "img/h4", "img/h5", "img/h6", "img/h7", "img/h8", "img/h9", "img/h10", "img/hj", "img/hq", "img/hk"
-  	];
-  	cardImgFiles = cardImgFiles.map(f=>f+".png");
-  	
-  	var cardImages = new Array(ROWMAX * COLMAX);
-  	var inloadingCount = 0;
-  	function loadImage(imgFile) {
-  		//console.log("loading Image -- "+imgFile);
-  		var image = new Image();
-  		image.src = imgFile;
-  		++inloadingCount;
-  		image.onload = function() {
-  			--inloadingCount;
-  		}
-  		return image;
-  	}
-  	function buildCardImages() {
-  		for (var i=0; i<cardImgFiles.length; ++i) {
-  			cardImages[i] = loadImage(cardImgFiles[i]);
-  		}
-  	}
-  	function waitImageLoading() {
-  		if (inloadingCount > 0)
-  			console.log("inloadingCount=", inloadingCount);
-  			setTimeout(waitImageLoading, 100);
-  	}
-  	var cardBack = loadImage("img/b1fv.png");
+  <head>
+    <meta charset="utf-8" />
+    <title>Concentration</title>
+    <style type="text/css">
+      #cardpan {
+        background-color: #006633;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        padding: 0px 0px;
+      }
+      #playerA {
+        position: absolute;
+        left: 91px;
+        top: 420px;
+      }
+      #playerB {
+        position: absolute;
+        left: 517px;
+        top: 420px;
+      }
+      .waitState {
+        color: white;
+      }
+      .firstPick {
+        color: orange;
+      }
+      .secondPick {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="cardpan" width="963" height="464"> </canvas>
+    <div id="playerA" class="waitState">PlayerA</div>
+    <div id="playerB" class="waitState">PlayerB</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      function Point(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+      function CardTile(x, y, w, h) {
+        this.x = x;
+        this.y = y;
+        this.width = w;
+        this.height = h;
+        this.contains = function (p1) {
+          return (
+            this.x < p1.x &&
+            p1.x < this.x + this.width &&
+            this.y < p1.y &&
+            p1.y < this.y + this.height
+          );
+        };
+      }
+      function drawRect(ctx, color, tile) {
+        ctx.fillStyle = color;
+        ctx.fillRect(tile.x, tile.y, tile.width, tile.height);
+        ctx.fill();
+      }
+      const CARD_WIDTH = 71;
+      const CARD_HEIGHT = 96;
+      const GAP = 20;
 
-  	function Card(s, r) {
-  		// suit = {"club"=0, "diamond"=1, "space"=2, "heart"=3};
-  		// rank = { "A"=1, 2,...,10, "J"=11, "Q"=12, "K"=13}
-  		this.suit = s;
-  		this.rank = r;
-  		this.open = false;
-  		this.getImage = function() {
-  			//console.log(s, r, cardImgFiles[this.suit*13 + (this.rank-1)]);
-  			if (this.open)
-  				return cardImages[this.suit*13 + (this.rank-1)];
-  			else
-  				return cardBack;
-  		}
-  	}
-    function cardDraw(ctx, card, tile) {
-  		ctx.drawImage(card.getImage(), tile.x, tile.y, CARD_WIDTH, CARD_HEIGHT);
-    }
-  	var context;
-  	var tile2d;
-  	var cardStatus;
-  	const states = {
-  		AFIRST : 0,
-  		ASECOND : 1,
-  		BFIRST : 2,
-  		BSECOND : 3
-  	}
-  	var gameState = states.AFIRST;
-  	var scoreA = 0;
-  	var scoreB = 0;
-	var selCardA;
-	var selCardB;
-  	
-  	function buildCardTiles() {
-  		tile2d = new Array(ROWMAX);
-  		for (var i=0; i<ROWMAX; ++i) {
-			tile2d[i] = new Array(COLMAX);
-  			for (var j=0; j<COLMAX; ++j) {
-  				tile2d[i][j] = new CardTile(j*CARD_WIDTH+GAP, i*CARD_HEIGHT+GAP, CARD_WIDTH, CARD_HEIGHT);
-  			}
-  		}
-  	}
-	function buildCardStatus() {
-		cardStatus = new Array(ROWMAX);
-  		for (var i=0; i<ROWMAX; ++i) {
-  			cardStatus[i] = new Array(COLMAX);
-  			for (var j=0; j<COLMAX; ++j) {
-  				cardStatus[i][j] = new Card(i, j+1);
-  			}
-  		}
-	}	
-	function findMousePointTile(p1) {
-		for (var i=0; i<ROWMAX; ++i) {
-			for (var j=0; j<COLMAX; ++j) {
-				if (tile2d[i][j].contains(p1)) {
-					return [i, j];
-				}
-			}
-		}
-		return null;
-	}
-	function doMouseClick(mouseEvent) {
-		var obj = $("#cardpan")[0];
-	  	var objleft = 0;
-	  	var objtop = 0;
-	  	var xpos;
-	  	var ypos;
-	  	while (obj.offsetParent) {
-	    	objleft += obj.offsetLeft;
-	    	objtop += obj.offsetTop;
-	    	obj = obj.offsetParent;
-	  	}
-	 	xpos = mouseEvent.pageX - objleft;
-	  	ypos = mouseEvent.pageY - objtop;
-	  	//console.log(xpos + ", " + ypos);
-	  	//$("#coord").text(xpos + ", " + ypos);
-	  	var pos = findMousePointTile(new Point(xpos, ypos))
-	  	if (!pos) return;
-	  	
-	  	var row = pos[0];
-	  	var col = pos[1];
-	  	
-		var rank1, rank2;
-		var row1, col1;
-		switch (gameState){
-			case states.AFIRST:
-				selCardA = [row, col];
-				cardStatus[row][col].open = true;
-			  	cardDraw(context, cardStatus[row][col], tile2d[row][col]);
-			  	setTimeout(function() {
-			  		cardStatus[row][col].open = false;
-			  		cardDraw(context, cardStatus[row][col], tile2d[row][col]);
-			  	}, 1000);
-				gameState = states.ASECOND;
-				break;
-			case states.ASECOND:
-				if (selCardA[0]===row && selCardA[1]===col){
-					//console.log(selCardA,row,col);
-					break;
-				}
-				cardStatus[row][col].open = true;
-			  	cardDraw(context, cardStatus[row][col], tile2d[row][col]);
-				row1 = selCardA[0];
-				col1 = selCardA[1];
-				rank1 = cardStatus[row1][col1].rank;
-				rank2 = cardStatus[row][col].rank;
-				if (rank1 == rank2){ // Hit same card
-					scoreA++;
-					cardStatus[row1][col1] = null;
-					cardStatus[row][col] = null;
-					setTimeout(function() {
-						drawRect(context, "#006633", tile2d[row][col]);
-						drawRect(context, "#006633", tile2d[row1][col1]);
-				  	}, 1000);
+      const ROWMAX = 4;
+      const COLMAX = 13;
 
-				}
-				else {
-				  	setTimeout(function() {
-				  		cardStatus[row][col].open = false;
-				  		cardDraw(context, cardStatus[row][col], tile2d[row][col]);
-				  	}, 1000);
-				}
-				gameState = states.BFIRST;
-				break;
-			case states.BFIRST:
-				selCardB = [row, col];
-				cardStatus[row][col].open = true;
-			  	cardDraw(context, cardStatus[row][col], tile2d[row][col]);
-			  	setTimeout(function() {
-			  		cardStatus[row][col].open = false;
-			  		cardDraw(context, cardStatus[row][col], tile2d[row][col]);
-			  	}, 1000);
-			  	gameState = states.BSECOND;
-				break;
-			case states.BSECOND:
-				if (selCardB[0]==row && selCardB[1]==col){
-					break;
-				}
-				cardStatus[row][col].open = true;
-			  	cardDraw(context, cardStatus[row][col], tile2d[row][col]);
-				row1 = selCardB[0];
-				col1 = selCardB[1];
-				rank1 = cardStatus[row1][col1].rank;
-				rank2 = cardStatus[row][col].rank;
-				if (rank1 == rank2){ // Hit same card
-					scoreB++;
-					cardStatus[row1][col1] = null;
-					cardStatus[row][col] = null;
-					setTimeout(function() {
-						drawRect(context, "#006633", tile2d[row][col]);
-						drawRect(context, "#006633", tile2d[row1][col1]);
-				  	}, 1000);
+      var cardImgFiles = [
+        'img/c1',
+        'img/c2',
+        'img/c3',
+        'img/c4',
+        'img/c5',
+        'img/c6',
+        'img/c7',
+        'img/c8',
+        'img/c9',
+        'img/c10',
+        'img/cj',
+        'img/cq',
+        'img/ck',
+        'img/d1',
+        'img/d2',
+        'img/d3',
+        'img/d4',
+        'img/d5',
+        'img/d6',
+        'img/d7',
+        'img/d8',
+        'img/d9',
+        'img/d10',
+        'img/dj',
+        'img/dq',
+        'img/dk',
+        'img/s1',
+        'img/s2',
+        'img/s3',
+        'img/s4',
+        'img/s5',
+        'img/s6',
+        'img/s7',
+        'img/s8',
+        'img/s9',
+        'img/s10',
+        'img/sj',
+        'img/sq',
+        'img/sk',
+        'img/h1',
+        'img/h2',
+        'img/h3',
+        'img/h4',
+        'img/h5',
+        'img/h6',
+        'img/h7',
+        'img/h8',
+        'img/h9',
+        'img/h10',
+        'img/hj',
+        'img/hq',
+        'img/hk',
+      ];
+      cardImgFiles = cardImgFiles.map((f) => f + '.png');
 
-				}
-				else {
-				  	setTimeout(function() {
-				  		cardStatus[row][col].open = false;
-				  		cardDraw(context, cardStatus[row][col], tile2d[row][col]);
-				  	}, 1000);
-				}
-				gameState = states.AFIRST;
-				break;
-		}
-		displayScore();
-	}
-	function suffle(suffCount) {
-		for (var cnt=0; cnt<suffCount; ++cnt) {
-			var r1 = Math.floor(Math.random() * ROWMAX);
-			var r2 = Math.floor(Math.random() * ROWMAX);
-			var c1 = Math.floor(Math.random() * COLMAX);
-			var c2 = Math.floor(Math.random() * COLMAX);
-			var card1 = cardStatus[r1][c1];
-			cardStatus[r1][c1] = cardStatus[r2][c2];
-			cardStatus[r2][c2] = card1;
-		}
-	}
-	function displayScore() {
-		switch (gameState){
-		case states.AFIRST:
-			$("#playerA").attr('class', 'firstPick');
-			$("#playerB").attr('class', 'waitState');
-			break;
-		case states.ASECOND:
-			$("#playerA").attr('class', 'secondPick');
-			$("#playerB").attr('class', 'waitState');
-			break;
-		case states.BFIRST:
-			$("#playerA").attr('class', 'waitState');
-			$("#playerB").attr('class', 'firstPick');
-			break;
-		case states.BSECOND:
-			$("#playerA").attr('class', 'waitState');
-			$("#playerB").attr('class', 'secondPick');
-			break;
-		}
-		$("#playerA").html("Player A: "+scoreA);
-		$("#playerB").html("Player B: "+scoreB);
-	}
+      var cardImages = new Array(ROWMAX * COLMAX);
+      var inloadingCount = 0;
+      function loadImage(imgFile) {
+        //console.log("loading Image -- "+imgFile);
+        var image = new Image();
+        image.src = imgFile;
+        ++inloadingCount;
+        image.onload = function () {
+          --inloadingCount;
+        };
+        return image;
+      }
+      function buildCardImages() {
+        for (var i = 0; i < cardImgFiles.length; ++i) {
+          cardImages[i] = loadImage(cardImgFiles[i]);
+        }
+      }
+      function waitImageLoading() {
+        if (inloadingCount > 0) console.log('inloadingCount=', inloadingCount);
+        setTimeout(waitImageLoading, 100);
+      }
+      var cardBack = loadImage('img/b1fv.png');
 
-	$(document).ready(function() {
-		
-		var canvas = $("#cardpan");
-		var canvasWidth = canvas.width();
-		var canvasHeight = canvas.height();
-	  	context = canvas.get(0).getContext("2d");
-		
-	  	buildCardImages();
-	  	waitImageLoading();
-	  	
-		buildCardTiles();
-		buildCardStatus();
-		suffle(1000);
-		
-		for (var i=0; i<ROWMAX; ++i) {
-			for (var j=0; j<COLMAX; ++j) {
-				cardDraw(context, cardStatus[i][j], tile2d[i][j]);
-			}
-		}
-		canvas[0].onmousedown = doMouseClick;
-		displayScore();
-		
-	});
-  </script>
-</body>
-</html>  
+      function Card(s, r) {
+        // suit = {"club"=0, "diamond"=1, "space"=2, "heart"=3};
+        // rank = { "A"=1, 2,...,10, "J"=11, "Q"=12, "K"=13}
+        this.suit = s;
+        this.rank = r;
+        this.open = false;
+        this.getImage = function () {
+          //console.log(s, r, cardImgFiles[this.suit*13 + (this.rank-1)]);
+          if (this.open) return cardImages[this.suit * 13 + (this.rank - 1)];
+          else return cardBack;
+        };
+      }
+      function cardDraw(ctx, card, tile) {
+        ctx.drawImage(card.getImage(), tile.x, tile.y, CARD_WIDTH, CARD_HEIGHT);
+      }
+      var context;
+      var tile2d;
+      var cardStatus;
+      const states = {
+        AFIRST: 0,
+        ASECOND: 1,
+        BFIRST: 2,
+        BSECOND: 3,
+      };
+      var gameState = states.AFIRST;
+      var scoreA = 0;
+      var scoreB = 0;
+      var selCardA;
+      var selCardB;
+
+      function buildCardTiles() {
+        tile2d = new Array(ROWMAX);
+        for (var i = 0; i < ROWMAX; ++i) {
+          tile2d[i] = new Array(COLMAX);
+          for (var j = 0; j < COLMAX; ++j) {
+            tile2d[i][j] = new CardTile(
+              j * CARD_WIDTH + GAP,
+              i * CARD_HEIGHT + GAP,
+              CARD_WIDTH,
+              CARD_HEIGHT
+            );
+          }
+        }
+      }
+      function buildCardStatus() {
+        cardStatus = new Array(ROWMAX);
+        for (var i = 0; i < ROWMAX; ++i) {
+          cardStatus[i] = new Array(COLMAX);
+          for (var j = 0; j < COLMAX; ++j) {
+            cardStatus[i][j] = new Card(i, j + 1);
+          }
+        }
+      }
+      function findMousePointTile(p1) {
+        for (var i = 0; i < ROWMAX; ++i) {
+          for (var j = 0; j < COLMAX; ++j) {
+            if (tile2d[i][j].contains(p1)) {
+              return [i, j];
+            }
+          }
+        }
+        return null;
+      }
+      function doMouseClick(mouseEvent) {
+        var obj = $('#cardpan')[0];
+        var objleft = 0;
+        var objtop = 0;
+        var xpos;
+        var ypos;
+        while (obj.offsetParent) {
+          objleft += obj.offsetLeft;
+          objtop += obj.offsetTop;
+          obj = obj.offsetParent;
+        }
+        xpos = mouseEvent.pageX - objleft;
+        ypos = mouseEvent.pageY - objtop;
+        //console.log(xpos + ", " + ypos);
+        //$("#coord").text(xpos + ", " + ypos);
+        var pos = findMousePointTile(new Point(xpos, ypos));
+        if (!pos) return;
+
+        var row = pos[0];
+        var col = pos[1];
+
+        var rank1, rank2;
+        var row1, col1;
+        switch (gameState) {
+          case states.AFIRST:
+            selCardA = [row, col];
+            cardStatus[row][col].open = true;
+            cardDraw(context, cardStatus[row][col], tile2d[row][col]);
+            setTimeout(function () {
+              cardStatus[row][col].open = false;
+              cardDraw(context, cardStatus[row][col], tile2d[row][col]);
+            }, 1000);
+            gameState = states.ASECOND;
+            break;
+          case states.ASECOND:
+            if (selCardA[0] === row && selCardA[1] === col) {
+              //console.log(selCardA,row,col);
+              break;
+            }
+            cardStatus[row][col].open = true;
+            cardDraw(context, cardStatus[row][col], tile2d[row][col]);
+            row1 = selCardA[0];
+            col1 = selCardA[1];
+            rank1 = cardStatus[row1][col1].rank;
+            rank2 = cardStatus[row][col].rank;
+            if (rank1 == rank2) {
+              // Hit same card
+              scoreA++;
+              cardStatus[row1][col1] = null;
+              cardStatus[row][col] = null;
+              setTimeout(function () {
+                drawRect(context, '#006633', tile2d[row][col]);
+                drawRect(context, '#006633', tile2d[row1][col1]);
+              }, 1000);
+            } else {
+              setTimeout(function () {
+                cardStatus[row][col].open = false;
+                cardDraw(context, cardStatus[row][col], tile2d[row][col]);
+              }, 1000);
+            }
+            gameState = states.BFIRST;
+            break;
+          case states.BFIRST:
+            selCardB = [row, col];
+            cardStatus[row][col].open = true;
+            cardDraw(context, cardStatus[row][col], tile2d[row][col]);
+            setTimeout(function () {
+              cardStatus[row][col].open = false;
+              cardDraw(context, cardStatus[row][col], tile2d[row][col]);
+            }, 1000);
+            gameState = states.BSECOND;
+            break;
+          case states.BSECOND:
+            if (selCardB[0] == row && selCardB[1] == col) {
+              break;
+            }
+            cardStatus[row][col].open = true;
+            cardDraw(context, cardStatus[row][col], tile2d[row][col]);
+            row1 = selCardB[0];
+            col1 = selCardB[1];
+            rank1 = cardStatus[row1][col1].rank;
+            rank2 = cardStatus[row][col].rank;
+            if (rank1 == rank2) {
+              // Hit same card
+              scoreB++;
+              cardStatus[row1][col1] = null;
+              cardStatus[row][col] = null;
+              setTimeout(function () {
+                drawRect(context, '#006633', tile2d[row][col]);
+                drawRect(context, '#006633', tile2d[row1][col1]);
+              }, 1000);
+            } else {
+              setTimeout(function () {
+                cardStatus[row][col].open = false;
+                cardDraw(context, cardStatus[row][col], tile2d[row][col]);
+              }, 1000);
+            }
+            gameState = states.AFIRST;
+            break;
+        }
+        displayScore();
+      }
+      function suffle(suffCount) {
+        for (var cnt = 0; cnt < suffCount; ++cnt) {
+          var r1 = Math.floor(Math.random() * ROWMAX);
+          var r2 = Math.floor(Math.random() * ROWMAX);
+          var c1 = Math.floor(Math.random() * COLMAX);
+          var c2 = Math.floor(Math.random() * COLMAX);
+          var card1 = cardStatus[r1][c1];
+          cardStatus[r1][c1] = cardStatus[r2][c2];
+          cardStatus[r2][c2] = card1;
+        }
+      }
+      function displayScore() {
+        switch (gameState) {
+          case states.AFIRST:
+            $('#playerA').attr('class', 'firstPick');
+            $('#playerB').attr('class', 'waitState');
+            break;
+          case states.ASECOND:
+            $('#playerA').attr('class', 'secondPick');
+            $('#playerB').attr('class', 'waitState');
+            break;
+          case states.BFIRST:
+            $('#playerA').attr('class', 'waitState');
+            $('#playerB').attr('class', 'firstPick');
+            break;
+          case states.BSECOND:
+            $('#playerA').attr('class', 'waitState');
+            $('#playerB').attr('class', 'secondPick');
+            break;
+        }
+        $('#playerA').html('Player A: ' + scoreA);
+        $('#playerB').html('Player B: ' + scoreB);
+      }
+
+      $(document).ready(function () {
+        var canvas = $('#cardpan');
+        var canvasWidth = canvas.width();
+        var canvasHeight = canvas.height();
+        context = canvas.get(0).getContext('2d');
+
+        buildCardImages();
+        waitImageLoading();
+
+        buildCardTiles();
+        buildCardStatus();
+        suffle(1000);
+
+        for (var i = 0; i < ROWMAX; ++i) {
+          for (var j = 0; j < COLMAX; ++j) {
+            cardDraw(context, cardStatus[i][j], tile2d[i][j]);
+          }
+        }
+        canvas[0].onmousedown = doMouseClick;
+        displayScore();
+      });
+    </script>
+  </body>
+</html>

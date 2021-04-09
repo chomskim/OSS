@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8>
+  <title>Pong</title>
+  <style type="text/css">
+    #gameframe {
+      background-color: #EEFFFF;
+      position: absolute;
+      left: 0px;
+      top: 0px;      
+      width: 720px; 
+      height: 520px;
+    }
+    #pongpan {
+      position: absolute;
+      left: 0px;
+      top: 0px;      
+    }
+    #scoreMe {
+      position: absolute;
+      left: 100px;
+      top: 20px;
+      color: white;
+    }
+    #scoreAI {
+      position: absolute;
+      left: 450px;
+      top: 20px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameframe" >
+    <canvas id="pongpan" width="700" height="500">
+    </canvas>
+  </div>
+  <div id="scoreMe" ></div>
+  <div id="scoreAI" ></div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    const LINETHICKNESS = 10;
+    const PADDLE_SIZE = 50;
+    const PADDLE_OFFSET = 20;
+    const PAN_WIDTH = 700;
+    const PAN_HEIGHT = 500;
+    
+    var canvas;
+    var context;
+    
+	var playerOnePosition = PAN_HEIGHT/2;
+	var playerTwoPosition = PAN_HEIGHT/2;
+	var ball = {
+			radius: LINETHICKNESS/2,
+			x: PAN_WIDTH/2 - LINETHICKNESS/2,
+			y: PAN_HEIGHT/2 - LINETHICKNESS/2,
+			dirX: -1, // -1 = left 1 = right
+			dirY: -1, // -1 = up 1 = down
+			speedX: 2,
+			speedY: 2
+		};
+    var paddle1 = new Tile(PADDLE_OFFSET, playerOnePosition, 
+    		LINETHICKNESS,PADDLE_SIZE);
+    var paddle2 = new Tile(PAN_WIDTH - PADDLE_OFFSET - LINETHICKNESS, playerTwoPosition, 
+    		LINETHICKNESS,PADDLE_SIZE);
+	var scoreMe = 0;
+	var scoreAI = 0;
+    
+  	function Point(x, y){
+		this.x = x;
+		this.y = y;
+  	}
+    function Tile(x, y, w, h){
+		this.x = x;
+		this.y = y;
+		this.width = w;
+		this.height = h;
+		this.contains = function(p1) {
+			return this.x < p1.x && p1.x < this.x+this.width
+			&& this.y < p1.y && p1.y < this.y+this.height;
+		}
+    }
+	function drawLine(ctx, width, color, from, to) {
+		ctx.lineWidth = width;
+		ctx.strokeStyle = color;
+		ctx.beginPath();
+		ctx.moveTo(from.x, from.y);
+		ctx.lineTo(to.x, to.y); 
+		ctx.closePath();
+		ctx.stroke();					
+	}
+	function drawCircle(ctx, color, center, radius){
+		ctx.fillStyle = color;
+		ctx.beginPath(); 
+		ctx.arc(center.x , center.y, radius, 0, Math.PI*2, false);
+		ctx.closePath(); 
+		ctx.fill();
+	}
+	function drawRect(ctx, width, color, tile){
+		ctx.lineWidth = width;
+		ctx.strokeStyle = color;
+		ctx.beginPath();
+		ctx.rect(tile.x, tile.y, tile.width, tile.height);
+		ctx.closePath(); 
+		ctx.stroke();
+	}
+	function drawFillRect(ctx, color, tile){
+		ctx.fillStyle = color;
+		ctx.fillRect(tile.x, tile.y, tile.width, tile.height);
+		ctx.fill();
+	}
+	function drawArena() {
+		drawFillRect(context, "black", new Tile(0,0,PAN_WIDTH,PAN_HEIGHT));
+		drawRect(context, LINETHICKNESS*2, "white", new Tile(0,0,PAN_WIDTH,PAN_HEIGHT));
+		drawLine(context, LINETHICKNESS/4, "white", new Point(PAN_WIDTH/2,0), new Point(PAN_WIDTH/2,PAN_HEIGHT));
+		//drawLine(context, LINETHICKNESS/4, "white", new Point(0,PAN_HEIGHT/2), new Point(PAN_WIDTH,PAN_HEIGHT/2));
+	}
+	function drawPaddle(paddle) {
+		drawFillRect(context, "white", new Tile(paddle.x, paddle.y-PADDLE_SIZE/2, paddle.width, paddle.height));
+	}
+	function drawBall(ball) {
+		//drawCircle(context, "white", new Point(ball.x, ball.y), ball.radius);
+		drawFillRect(context, "white", new Tile(ball.x, ball.y, LINETHICKNESS, LINETHICKNESS));
+	}
+	
+	function handleMouseMove(evt) {
+		
+		paddle1.y = evt.clientY;
+		if (paddle1.y-PADDLE_SIZE/2 < LINETHICKNESS) {
+			paddle1.y = PADDLE_SIZE/2 + LINETHICKNESS;
+		}
+		else if (paddle1.y+PADDLE_SIZE/2 > PAN_HEIGHT - LINETHICKNESS) {
+			paddle1.y = PAN_HEIGHT - LINETHICKNESS - PADDLE_SIZE/2;
+		}
+	}
+	function moveBall(ball) {
+	    ball.x += (ball.dirX * ball.speedX);
+	    ball.y += (ball.dirY * ball.speedY);
+	}
+	function checkEdgeCollision(ball) {
+	    if (ball.y <= (LINETHICKNESS) || ball.y+LINETHICKNESS >= (PAN_HEIGHT - LINETHICKNESS))
+	        ball.dirY = -ball.dirY;
+	    if (ball.x <= (LINETHICKNESS) || ball.x+LINETHICKNESS >= (PAN_WIDTH - LINETHICKNESS))
+	        ball.dirX = -ball.dirX;
+	}
+	function checkHitBall() {
+	    if (ball.dirX === -1 && 
+	    	ball.x <= paddle1.x+LINETHICKNESS && ball.x >= paddle1.x  &&
+	    	paddle1.y-PADDLE_SIZE/2 < ball.y+LINETHICKNESS && 
+	    	paddle1.y+PADDLE_SIZE/2 > ball.y) {
+	    	chgDir = -1;
+	    }
+	    else if (ball.dirX === 1 && 
+	    	paddle2.x <= ball.x+LINETHICKNESS && paddle2.x+LINETHICKNESS >= ball.x &&
+	    	paddle2.y-PADDLE_SIZE/2  < ball.y+LINETHICKNESS &&
+	    	paddle2.y+PADDLE_SIZE/2 > ball.y) {
+	    	chgDir = -1;
+	    }
+	    else
+	    	chgDir = 1;
+	    ball.dirX *= chgDir;
+	}
+	function checkPointScored() {
+	    // 1 point for AI if left wall is hit
+	    if (ball.x <= LINETHICKNESS) 
+	        scoreAI += 1;
+	    // 1 points for Me if right wall is hit
+	    else if (ball.x+LINETHICKNESS >= PAN_WIDTH - LINETHICKNESS)
+	        scoreMe += 1;
+	} 
+	function artificialIntelligence() {
+	    // If ball is moving away from paddle, center bat
+	    if (ball.dirX === -1) {
+	        if (paddle2.y < (PAN_HEIGHT/2))
+	            paddle2.y += 2;
+	        else if (paddle2.y > (PAN_HEIGHT/2))
+	            paddle2.y -= 2;
+	    }
+	    // if ball moving towards bat, track its movement. 
+	    else if (ball.dirX === 1) {
+	        if (paddle2.y < ball.y+LINETHICKNESS/2)
+	            paddle2.y += 2;
+	        else
+	            paddle2.y -=2;
+	    }
+	}
+	function displayScores() {
+	    $("#scoreMe").html("Score Me = "+scoreMe);
+	    $("#scoreAI").html("Score AI = "+scoreAI);
+	}
+	function mainLoop() {
+		drawArena();
+	    drawBall(ball);
+	    drawPaddle(paddle1);
+	    drawPaddle(paddle2);
+	    moveBall(ball);
+	    checkEdgeCollision(ball);
+	    checkPointScored();
+	    checkHitBall();
+	    displayScores();
+	    artificialIntelligence();
+	    setTimeout(mainLoop, 1000/100);
+	}
+	$(document).ready(function() {
+		
+		canvas = $("#pongpan");
+		context = canvas.get(0).getContext("2d");
+		
+		drawArena();
+	    drawBall(ball);
+	    drawPaddle(paddle1);
+	    drawPaddle(paddle2);
+
+		canvas[0].onmousemove = handleMouseMove;
+	    
+	    setTimeout(mainLoop, 500);
+
+	});
+  </script>
+</body>
+</html>  
