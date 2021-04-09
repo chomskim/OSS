@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8>
+  <title>Brian</title>
+  <style type="text/css">
+    .gameText {
+      color: #e18000;
+      -webkit-text-stroke: 1px white;
+      width: 800px;
+	  text-align: center;
+      font-size: xx-large;
+	  font-weight: bold;
+    }
+    #gamepan {
+      background-color: #1e0a1e;
+      position: absolute;
+      left: 0px;
+      top: 0px;      
+      padding: 0px 0px;
+    }
+    #titleArea {
+      position: absolute;
+      top: 20px;      
+      padding: 0px 0px;
+    }
+    #scoreArea {
+      font-size: x-large;
+      position: absolute;
+      top: 525px;      
+      padding: 0px 0px;
+    }
+  </style>
+  <script src="game1.js"></script>   
+</head>
+<body>
+<div id="gameArea">
+  <canvas id="gamepan" width="800" height="600">
+  </canvas>
+  <div id="titleArea" class="gameText">Press Play to Start</div>
+  <div id="scoreArea" class="gameText">Play</div>
+</div>
+
+</body>
+</html>  
