@@ -1,15 +1,14 @@
 Report #2
-제목 -- pgzero를 이용한 Pong Game
+제목 -- pgzero를 이용한 Brian Game
 
-마감일 -- 5월23일(토)
+마감일 -- 5월7일(금)
 
-1. https://github.com/chomskim/OSS/tree/master/pgzero/pong
-   https://github.com/chomskim/OSS/tree/master/ai-pong
-   https://github.com/chomskim/Web-Game/blob/develop/Web-Game-Day3/1pong/pong3.html
+1. https://github.com/chomskim/OSS/tree/master/brian
+   https://github.com/chomskim/OSS/tree/master/web-game/2brian
    참조 (JavaScript로 작성된 프로그램)
 
-2. ai-pong프로그램을 수정
-3. pong3의 AI(기존, Left)를 이길 수 있는 새로운 AI(Right) 적용
-4. 각도는 벽에 대해 30도 보다 커야 한다. 
-5. eclass에 pong3.py 파일로 제출
+2. brian.py 프로그램을 수정
+3. web-game의 sounds 파일을 이용해 버튼을 누르면 소리나게 함.
+4. Title에 You 대신 자신의 이름(ID)가 나오게 함. 마지막 Final Score에도 ID가 나오게 함.
+5. eclass에 brian.py 와 마지막 Score(10점 이상) 화면 캡쳐 파일(brian.png) 파일을 제출
 

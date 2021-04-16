@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8>
+  <title>Pacman</title>
+  <style type="text/css">
+    .baseText {
+      color: #ff4000;
+      -webkit-text-stroke: 1px white;
+      width: 600px;
+	  text-align: center;
+      font-size: x-large;
+	  font-weight: bold;
+    }
+    .scoreText {
+      color: #0040ff;
+      width: 580px;
+      -webkit-text-stroke: 1px white;
+      text-align: right;
+      font-size: xx-large;
+	  font-weight: bold;
+    }
+    .levelText {
+      color: #ffff00;
+      width: 600px;
+      -webkit-text-stroke: 1px #0000ff;
+      text-align: left;
+      font-size: x-large;
+	  font-weight: bold;
+    }
+    #gamepan {
+      background-color: #1e0a1e;
+      position: absolute;
+      left: 0px;
+      top: 0px;      
+      padding: 0px 0px;
+    }
+    #scoreArea {
+      position: absolute;
+      left: 0px;
+      top: 10px;      
+      padding: 0px 0px;
+    }
+    #levelArea {
+      position: absolute;
+      left: 10px;
+      top: 2px;      
+      padding: 0px 0px;
+    }
+    #textArea {
+      position: absolute;
+      left: 0px;
+      top: 412px;      
+      padding: 0px 0px;
+    }
+  </style>
+  <script src="Keys.js"></script>   
+  <script src="map.js"></script>   
+  <script src="game2.js"></script>   
+</head>
+<body>
+<div id="gameArea">
+  <canvas id="gamepan" width="600" height="660">
+  </canvas>
+  <div id="textArea" class="baseText"></div>
+  <div id="scoreArea" class="scoreText"></div>
+  <div id="levelArea" class="levelText"></div>
+</div>
+
+</body>
+</html>  
