@@ -1,3 +1,5 @@
+import pgzrun
+
 alien = Actor('alien', anchor=('middle', 'bottom'))
 
 TITLE = "Alien walk"
@@ -33,3 +35,5 @@ def update():
         alien.right = WIDTH
     elif alien.left < 0:
         alien.left = 0
+
+pgzrun.go()

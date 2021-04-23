@@ -1,3 +1,4 @@
+import pgzrun
 import math
 
 WIDTH = 400
@@ -106,3 +107,5 @@ def start_dive():
 
 
 clock.schedule(start_dive, 3)
+
+pgzrun.go()

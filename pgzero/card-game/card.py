@@ -49,7 +49,7 @@ for i in range(ROWMAX):
     tile2d[i*COLMAX+j] = CardTile(j*CARD_WIDTH+GAP, i*CARD_HEIGHT+GAP, CARD_WIDTH, CARD_HEIGHT)
 
 cardStatus = cardNames[:]
-cardStatusOpen = [True]*COLMAX*ROWMAX
+cardStatusOpen = [False]*COLMAX*ROWMAX
 
 #for i in range(ROWMAX):
 #  for j in range(COLMAX):
@@ -90,7 +90,15 @@ def find_mouse_point_tile(px, py):
 def on_mouse_down(pos):
   px, py = pos
   pos = find_mouse_point_tile(px, py)
-  cardStatusOpen[pos] = not cardStatusOpen[pos]
+  #cardStatusOpen[pos] = not cardStatusOpen[pos]
+  cardStatusOpen[pos] = True
+  return pos
+
+def on_mouse_up(pos):
+  px, py = pos
+  pos = find_mouse_point_tile(px, py)
+  #cardStatusOpen[pos] = not cardStatusOpen[pos]
+  cardStatusOpen[pos] = False
   return pos
 
 suffle(1000)
