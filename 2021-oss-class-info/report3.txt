@@ -1,7 +1,7 @@
 Report #3
 제목 -- pacman2의 Ghost AI 높이기
 
-마감일 -- 5월30일(토)
+마감일 -- 5월10일(월)
 
 1. https://github.com/chomskim/OSS/tree/pac-branch/pacman2
 2. Ghost AI 수정

@@ -1,19 +1,19 @@
 Report #5
-Á¦¸ñ --  Raspberry PI »óÅÂ Publish¸¦ ¹Ş¾Æ(Subscribe) MySQL Table¿¡ ÀúÀå 
+ì œëª© --  Raspberry PI ìƒíƒœ Publishë¥¼ ë°›ì•„(Subscribe) MySQL Tableì— ì €ì¥ 
 
-¸¶°¨ÀÏ -- 6¿ù14ÀÏ(ÀÏ)
+ë§ˆê°ì¼ -- 6ì›”14ì¼(ì¼)
 
-https://github.com/chomskim/OSS/tree/master »ç¿ë
+https://github.com/chomskim/OSS/tree/master ì‚¬ìš©
 pip install mysql-connector
 
-1. IOT-Proj/sub_mysql.py ¼öÁ¤
-2. 4¹ø°úÁ¦ÀÇ ÇÁ·Î±×·¥À» pub_stat.py·Î °íÃÄ ½ÇÇà
-3. RPiÀÇ °°Àº Æú´õ¿¡¼­ dbconfig.py, dbhelper.py, mqconfig.py ¿Í ÇÔ²² ½ÇÇà 
-4. 4¹ø °úÁ¦¿¡¼­ ¹ŞÀº 
+1. IOT-Proj/sub_mysql.py ìˆ˜ì •
+2. 4ë²ˆê³¼ì œì˜ í”„ë¡œê·¸ë¨ì„ pub_stat.pyë¡œ ê³ ì³ ì‹¤í–‰
+3. RPiì˜ ê°™ì€ í´ë”ì—ì„œ dbconfig.py, dbhelper.py, mqconfig.py ì™€ í•¨ê»˜ ì‹¤í–‰ 
+4. 4ë²ˆ ê³¼ì œì—ì„œ ë°›ì€ 
 2020-05-29 15:58:08.742108,52.1,27.4,874.5,258.7
-ÀÇ ÇÑ Row¸¦
+ì˜ í•œ Rowë¥¼
 temp_time(2020-05-29 15:58:08.742108), temp_data("52.1,27.4,874.5,258.7")
-µÎ columnÀ¸·Î ÀúÀå(MySQL TableÀº ¹Ù²ÙÁö ¾Ê´Â´Ù) 
+ë‘ columnìœ¼ë¡œ ì €ì¥(MySQL Tableì€ ë°”ê¾¸ì§€ ì•ŠëŠ”ë‹¤) 
 
- 5. ÀÚ½ÅÀÇ pub_stat.py sub_sql.py¸¦ °°ÀÌ Á¦Ãâ
- 
+ 5. ìì‹ ì˜ pub_stat.py sub_sql.pyë¥¼ ê°™ì´ ì œì¶œ
+  
