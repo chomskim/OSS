@@ -1,18 +1,14 @@
 Report #4
 제목 --  MQTT로 Raspberry PI 상태 Publish
 
-마감일 -- 6월07일(토)
+마감일 -- 5월31일(월)
 
-https://github.com/chomskim/OSS/tree/master 사용
+https://github.com/chomskim/OSS/iot-2021 사용
 
-1. IOT-Proj/pub_temp.py 수정
-2. $ top -n1 을 이용해 컴퓨터 상태 정보를 얻는다.
-      그중 
-3. %Cpu(s): 18.8 us,  5.9 sy,-->18.8+5.9(cpu 사용율%)
-4. MiB Mem :    874.5 total, 285.7 used-->874.5와 258.7
+1. iot/pub_stat_conf.py mqtt/pub_temp_conf.py 참조
+2. 현재 (시간, 시스템 상태[cpu-use-percent,mem-avail,mem-tot,mem-use-percent,disk-free,disk-tot,disk-use-percent]) 
+   2021-05-21 11:49:31.242979,4.8,221.1,874.5,74.7,48.4,58.4,13.4
+3. 수정 후 (시간, CPU온도, CPU 로드(%), 사용 Mem, 천체 Mem) 
+   2021-05-21 12:19:01.925287,49.4,4.8,221.1,874.5
 
-5. 현재 (시간, CPU 온도) -- 2020-05-29 15:58:08.742108,52.1
-6. 수정 후 (시간, CPU온도, CPU 로드(%), 천체 Mem, 사용 Mem) -- 2020-05-29 15:58:08.742108,52.1,27.4,874.5,258.7
-
-참고 $ top -n1 명령 후 나온 text를 분석하는 대신 psutil  이라는 모듈을 (pip install psutil)을 이용해 필요한 정보를
-얻어도 됨.(편한 방법 사용, 단 결과는 같아야 함) 
+4. pub_stat_conf.py 제출
