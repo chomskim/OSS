@@ -44,7 +44,6 @@ class DBHelper:
         cursor = conn.cursor()
         
         try:
-            #query = "select temp_time, temp_data from status_table "
             query = """
             SELECT sub.id, sub.stat_time, sub.stat_data FROM (
                 SELECT id, stat_time, stat_data FROM status_table ORDER BY id DESC LIMIT %s
@@ -53,8 +52,6 @@ class DBHelper:
             cursor.execute(query, (num,))
         except Exception as e:
             print("DB Error at buildStatusDFFromDB", e)
-        finally:
-            conn.close()
         
         df_data = {'time':[], 'Temp':[], 'CPU':[], 'Mem':[]}
         for row in cursor:
@@ -68,5 +65,7 @@ class DBHelper:
         statdf = pd.DataFrame(data=df_data)
         statdf = statdf.set_index('time')
         statdf = statdf.tail(num)
+        cursor.close()
+        conn.close()
         return statdf
         

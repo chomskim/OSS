@@ -27,7 +27,7 @@ def on_message(client, userdata, msg):
     payload_string = msg.payload.decode('utf-8')
     print("{:d} Topic: {}. Payload: {}".format(count, msg.topic, payload_string))
 
-def pubStatusData(client, freq=10, limit=100):
+def pubStatusData(client, freq=10, limit=1000):
     delta = 1/freq
     
     for i in range(limit*freq):
@@ -50,6 +50,7 @@ def pubStatusData(client, freq=10, limit=100):
         total = round(disk.total/1024.0/1024.0/1024.0,1)
         disk_use = str(free) + ',' + str(total) + ',' + str(disk.percent)
 
+        #row = "{:s},{:s},{:s},{:s}".format(ti.strftime("%Y-%m-%d %H:%M:%S.%f"),cpu_temp,cpu_use,mem_use)
         row = "{:s},{:s},{:s},{:s}".format(ti.strftime("%Y-%m-%d %H:%M:%S.%f"),cpu_use,mem_use,disk_use)
         
         client.publish(MQ_TOPIC,payload=row, qos=1)
@@ -68,7 +69,8 @@ if __name__ == "__main__":
     client.connect(MQ_HOST, port=1883, keepalive=120)
     print ("connected {} ".format(MQ_HOST))
     client.loop_start()
-    pubStatusData(client)
+    #pubStatusData(client)
+    pubStatusData(client, freq=10)
 
     print ("sleep end")
     client.loop_stop()

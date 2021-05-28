@@ -16,7 +16,7 @@ class DBHelper:
         dbconfig.setHost(host)
 
     def connect(self):
-        #print ("Getting connection to database")
+        #print ("Getting connection to database", dbconfig.db_host, dbconfig.db_name)
         return mysql.connector.connect(
             host=dbconfig.db_host, 
             user=dbconfig.db_user, 
@@ -26,8 +26,8 @@ class DBHelper:
     def insertStatusRec(self, tim, dat):
         conn = self.connect()
         try:
-            query1 = """insert cputemp_table 
-            (temp_time, temp_data)
+            query1 = """insert status_table 
+            (stat_time, stat_data)
             values (%s, %s); """
             cursor = conn.cursor()
             
@@ -53,11 +53,10 @@ class DBHelper:
             cursor.execute(query, (num,))
         except Exception as e:
             print("DB Error at buildStatusDFFromDB", e)
-        finally:
-            conn.close()
         
         df_data = {'time':[], 'Temp':[], 'CPU':[], 'Mem':[]}
         for row in cursor:
+            #print(row[0],row[1], row[1])
             df_data['time'].append(row[1].strftime("%M:%S"))
             stat = row[2].split(",")
             
@@ -68,5 +67,7 @@ class DBHelper:
         statdf = pd.DataFrame(data=df_data)
         statdf = statdf.set_index('time')
         statdf = statdf.tail(num)
+        cursor.close()
+        conn.close()
         return statdf
         
