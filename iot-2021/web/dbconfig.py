@@ -1,7 +1,7 @@
 import os
 
 #IP_ADDR = "172.30.1.6"
-IP_ADDR = "172.30.1.12"
+IP_ADDR = "172.30.1.7"
 #DIR_DATAPATH = os.path.join("D:", r"D:\home\project\medical\data")
 
 db_host = IP_ADDR
